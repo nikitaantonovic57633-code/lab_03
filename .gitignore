@@ -1,1 +1,3 @@
 .idea/
+src/library_catalog.egg-info/
+src/library_catalog/__pycache__/
