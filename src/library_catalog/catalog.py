@@ -17,3 +17,8 @@ class Catalog:
         if item_id not in self._books:
             raise BookNotFoundError("Книга не найдена")
         return self._books[item_id]
+
+    def remove(self, item_id: str):
+        if item_id not in self._books:
+            raise BookNotFoundError("Книга не найдена")
+        del self._books[item_id]

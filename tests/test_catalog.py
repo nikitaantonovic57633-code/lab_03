@@ -78,3 +78,34 @@ def test_get_nonexisting_book():
     catalog.add(book)
     with pytest.raises(BookNotFoundError):
         catalog.get("book-000")
+
+
+def test_remove_existing_book():
+    catalog = Catalog()
+    book = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    catalog.add(book)
+    catalog.remove("book-001")
+    assert len(catalog._books) == 0
+
+
+def test_remove_nonexisting_book():
+    catalog = Catalog()
+    book = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    catalog.add(book)
+    with pytest.raises(BookNotFoundError):
+        catalog.remove("book-000")
+    assert len(catalog._books) == 1
