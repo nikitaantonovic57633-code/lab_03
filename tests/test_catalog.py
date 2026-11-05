@@ -2,7 +2,7 @@ import pytest
 
 from library_catalog.catalog import Catalog
 from library_catalog.models import Book
-from library_catalog.errors import DuplicateIDError, InvalidBookError
+from library_catalog.errors import DuplicateIDError, InvalidBookError, BookNotFoundError
 
 
 def test_add_book():
@@ -49,3 +49,32 @@ def test_add_invalid_object():
     with pytest.raises(InvalidBookError):
         catalog.add(book)
     assert len(catalog._books) == 0
+
+
+def test_get_existing_book():
+    catalog = Catalog()
+    book = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    catalog.add(book)
+    assert catalog.get("book-001") is book
+
+
+def test_get_nonexisting_book():
+    catalog = Catalog()
+    book = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    catalog.add(book)
+    with pytest.raises(BookNotFoundError):
+        catalog.get("book-000")
