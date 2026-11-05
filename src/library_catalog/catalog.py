@@ -29,3 +29,10 @@ class Catalog:
             if book.category == category:
                 result.append(book)
         return result
+
+    def find_by_name(self, query: str):
+        result = []
+        for book in self._books.values():
+            if book.name.lower() == query.lower():
+                result.append(book)
+        return result

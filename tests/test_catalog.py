@@ -209,3 +209,100 @@ def test_find_by_category_independence():
     result = catalog.find_by_category("Роман")
     result.clear()
     assert len(catalog._books) == 3
+
+
+def test_find_by_name():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    result = catalog.find_by_name("Горе от ума")
+    assert result == [book2]
+
+
+def test_find_by_name_register():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    result = catalog.find_by_name("ГОРЕ ОТ УМА")
+    assert result == [book2]
+
+
+def test_find_by_name_no_matches():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    result = catalog.find_by_name("Вельд")
+    assert result == []
+
+
+def test_find_by_name_independence():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    result = catalog.find_by_name("Горе от ума")
+    result.clear()
+    assert len(catalog._books) == 2
