@@ -42,3 +42,6 @@ class Catalog:
 
     def __iter__(self):
         return iter(self._books.values())
+
+    def __contains__(self, item_id: str):
+        return item_id in self._books

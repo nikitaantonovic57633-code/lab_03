@@ -367,3 +367,38 @@ def test_catalog_iteration_order():
     for book in catalog:
         result.append(book)
     assert result == [book2, book1, book3]
+
+
+def test_catalog_contains():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    book3 = Book(
+        book_id="book-003",
+        name="Война и мир",
+        category="Роман",
+        year=1868,
+        author="Лев Толстой",
+        pages=1300
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    catalog.add(book3)
+    assert "book-001" in catalog
+    assert "book-000" not in catalog
+    catalog.remove("book-003")
+    assert "book-003" not in catalog
