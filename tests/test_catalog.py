@@ -16,7 +16,7 @@ def test_add_book():
         pages=500
     )
     catalog.add(book)
-    assert len(catalog._books) == 1
+    assert len(catalog) == 1
 
 
 def test_add_book_with_duplicate_id():
@@ -40,7 +40,7 @@ def test_add_book_with_duplicate_id():
     catalog.add(book1)
     with pytest.raises(DuplicateIDError):
         catalog.add(book2)
-    assert len(catalog._books) == 1
+    assert len(catalog) == 1
 
 
 def test_add_invalid_object():
@@ -48,7 +48,7 @@ def test_add_invalid_object():
     book = "book-001"
     with pytest.raises(InvalidBookError):
         catalog.add(book)
-    assert len(catalog._books) == 0
+    assert len(catalog) == 0
 
 
 def test_get_existing_book():
@@ -92,7 +92,7 @@ def test_remove_existing_book():
     )
     catalog.add(book)
     catalog.remove("book-001")
-    assert len(catalog._books) == 0
+    assert len(catalog) == 0
 
 
 def test_remove_nonexisting_book():
@@ -108,7 +108,7 @@ def test_remove_nonexisting_book():
     catalog.add(book)
     with pytest.raises(BookNotFoundError):
         catalog.remove("book-000")
-    assert len(catalog._books) == 1
+    assert len(catalog) == 1
 
 
 def test_find_by_category():
@@ -208,7 +208,7 @@ def test_find_by_category_independence():
     catalog.add(book3)
     result = catalog.find_by_category("Роман")
     result.clear()
-    assert len(catalog._books) == 3
+    assert len(catalog) == 3
 
 
 def test_find_by_name():
@@ -305,4 +305,30 @@ def test_find_by_name_independence():
     catalog.add(book2)
     result = catalog.find_by_name("Горе от ума")
     result.clear()
-    assert len(catalog._books) == 2
+    assert len(catalog) == 2
+
+
+def test_catalog_length():
+    catalog = Catalog()
+    assert len(catalog) == 0
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    assert len(catalog) == 2
+    catalog.remove("book-001")
+    assert len(catalog) == 1

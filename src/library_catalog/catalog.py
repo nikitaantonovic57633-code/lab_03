@@ -36,3 +36,6 @@ class Catalog:
             if book.name.lower() == query.lower():
                 result.append(book)
         return result
+
+    def __len__(self):
+        return len(self._books)
