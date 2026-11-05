@@ -22,3 +22,10 @@ class Catalog:
         if item_id not in self._books:
             raise BookNotFoundError("Книга не найдена")
         del self._books[item_id]
+
+    def find_by_category(self, category: str):
+        result = []
+        for book in self._books.values():
+            if book.category == category:
+                result.append(book)
+        return result

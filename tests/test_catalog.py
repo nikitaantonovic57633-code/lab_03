@@ -109,3 +109,103 @@ def test_remove_nonexisting_book():
     with pytest.raises(BookNotFoundError):
         catalog.remove("book-000")
     assert len(catalog._books) == 1
+
+
+def test_find_by_category():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    book3 = Book(
+        book_id="book-003",
+        name="Война и мир",
+        category="Роман",
+        year=1868,
+        author="Лев Толстой",
+        pages=1300
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    catalog.add(book3)
+    result = catalog.find_by_category("Роман")
+    assert result == [book1, book3]
+
+
+def test_find_by_category_no_matches():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    book3 = Book(
+        book_id="book-003",
+        name="Война и мир",
+        category="Роман",
+        year=1868,
+        author="Лев Толстой",
+        pages=1300
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    catalog.add(book3)
+    result = catalog.find_by_category("Комедия")
+    assert result == []
+
+
+def test_find_by_category_independence():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    book3 = Book(
+        book_id="book-003",
+        name="Война и мир",
+        category="Роман",
+        year=1868,
+        author="Лев Толстой",
+        pages=1300
+    )
+    catalog.add(book1)
+    catalog.add(book2)
+    catalog.add(book3)
+    result = catalog.find_by_category("Роман")
+    result.clear()
+    assert len(catalog._books) == 3
