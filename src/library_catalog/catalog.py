@@ -39,3 +39,6 @@ class Catalog:
 
     def __len__(self):
         return len(self._books)
+
+    def __iter__(self):
+        return iter(self._books.values())

@@ -332,3 +332,38 @@ def test_catalog_length():
     assert len(catalog) == 2
     catalog.remove("book-001")
     assert len(catalog) == 1
+
+
+def test_catalog_iteration_order():
+    catalog = Catalog()
+    book1 = Book(
+        book_id="book-001",
+        name="Преступление и наказание",
+        category="Роман",
+        year=1866,
+        author="Фёдор Достоевский",
+        pages=500
+    )
+    book2 = Book(
+        book_id="book-002",
+        name="Горе от ума",
+        category="Пьеса",
+        year=1825,
+        author="Александр Грибоедов",
+        pages=140
+    )
+    book3 = Book(
+        book_id="book-003",
+        name="Война и мир",
+        category="Роман",
+        year=1868,
+        author="Лев Толстой",
+        pages=1300
+    )
+    catalog.add(book2)
+    catalog.add(book1)
+    catalog.add(book3)
+    result = []
+    for book in catalog:
+        result.append(book)
+    assert result == [book2, book1, book3]
