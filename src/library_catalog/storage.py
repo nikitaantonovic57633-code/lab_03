@@ -5,10 +5,11 @@ from .catalog import Catalog
 from .errors import UnsupportedFormatVersionError, CorruptedFileError
 from .models import Book
 
+FORMAT_VERSION = 1
 
 def save_catalog(catalog: Catalog, path: str):
     data = {
-        "format_version": 1,
+        "format_version": FORMAT_VERSION,
         "books": []
     }
     for book in catalog:
@@ -29,7 +30,7 @@ def load_catalog(path: str):
         raise CorruptedFileError("Неверная структура JSON")
     if "format_version" not in data:
         raise CorruptedFileError("Отсутствует версия формата")
-    if data["format_version"] != 1:
+    if data["format_version"] != FORMAT_VERSION:
         raise UnsupportedFormatVersionError("Неподдерживаемый формат версии файла")
 
     if "books" not in data:

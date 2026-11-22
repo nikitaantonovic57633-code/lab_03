@@ -5,6 +5,7 @@ from library_catalog.catalog import Catalog
 from library_catalog.models import Book
 from library_catalog.storage import save_catalog, load_catalog
 from library_catalog.errors import CorruptedFileError, UnsupportedFormatVersionError, InvalidBookError, DuplicateIDError
+from library_catalog.storage import FORMAT_VERSION
 
 
 def test_save_catalog(tmp_path):
@@ -23,7 +24,7 @@ def test_save_catalog(tmp_path):
     with open(path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    assert data["format_version"] == 1
+    assert data["format_version"] == FORMAT_VERSION
     assert len(data["books"]) == 1
     assert data["books"][0]["book_id"] == "book-001"
     assert data["books"][0]["name"] == "Преступление и наказание"
@@ -40,7 +41,7 @@ def test_save_empty_catalog(tmp_path):
     with open(path, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    assert data["format_version"] == 1
+    assert data["format_version"] == FORMAT_VERSION
     assert data["books"] == []
 
 
@@ -87,14 +88,14 @@ def test_load_empty_catalog(tmp_path):
 
 def test_load_invalid_json(tmp_path):
     path = tmp_path / "invalid.json"
-    path.write_text('{"format_version": 1, "books": [}', encoding="utf-8")
+    path.write_text('{"format_version": FORMAT_VERSION, "books": [}', encoding="utf-8")
     with pytest.raises(CorruptedFileError):
         load_catalog(path)
 
 
 def test_load_unsupported_format_version(tmp_path):
     path = tmp_path / "unsupported_format_version.json"
-    path.write_text('{"format_version": 2, "books": []}', encoding="utf-8")
+    path.write_text(f'{{"format_version": {FORMAT_VERSION + 1}, "books": []}}', encoding="utf-8")
     with pytest.raises(UnsupportedFormatVersionError):
         load_catalog(path)
 
@@ -115,28 +116,28 @@ def test_load_invalid_root(tmp_path):
 
 def test_load_missing_books(tmp_path):
     path = tmp_path / "missing_books.json"
-    path.write_text('{"format_version": 1}', encoding="utf-8")
+    path.write_text(f'{{"format_version": {FORMAT_VERSION}}}', encoding="utf-8")
     with pytest.raises(CorruptedFileError):
         load_catalog(path)
 
 
 def test_load_invalid_books_type(tmp_path):
     path = tmp_path / "invalid_books_type.json"
-    path.write_text('{"format_version": 1, "books": {}}', encoding="utf-8")
+    path.write_text(f'{{"format_version": {FORMAT_VERSION}, "books": {{}}}}', encoding="utf-8")
     with pytest.raises(CorruptedFileError):
         load_catalog(path)
 
 
 def test_load_invalid_book_type(tmp_path):
     path = tmp_path / "invalid_book_type.json"
-    path.write_text('{"format_version": 1, "books": [123]}', encoding="utf-8")
+    path.write_text(f'{{"format_version": {FORMAT_VERSION}, "books": [123]}}', encoding="utf-8")
     with pytest.raises(CorruptedFileError):
         load_catalog(path)
 
 
 def test_load_missing_book_field(tmp_path):
     path = tmp_path / "missing_book_field.json"
-    path.write_text('{"format_version": 1, "books": [{}]}', encoding="utf-8")
+    path.write_text(f'{{"format_version": {FORMAT_VERSION}, "books": [{{}}]}}', encoding="utf-8")
     with pytest.raises(CorruptedFileError):
         load_catalog(path)
 
@@ -144,7 +145,7 @@ def test_load_missing_book_field(tmp_path):
 def test_load_invalid_book(tmp_path):
     path = tmp_path / "invalid_book.json"
     data = {
-        "format_version": 1,
+        "format_version": FORMAT_VERSION,
         "books": [{
             "book_id": "book-001",
             "name": "Преступление и наказание",
@@ -162,7 +163,7 @@ def test_load_invalid_book(tmp_path):
 def test_load_duplicate_book_id(tmp_path):
     path = tmp_path / "duplicate_book_id.json"
     data = {
-        "format_version": 1,
+        "format_version": FORMAT_VERSION,
         "books": [{
             "book_id": "book-001",
             "name": "Преступление и наказание",
@@ -197,7 +198,7 @@ def test_load_no_partial_changes(tmp_path):
     catalog.add(book)
     path = tmp_path / "no_partial_changes.json"
     data = {
-        "format_version": 1,
+        "format_version": FORMAT_VERSION,
         "books": [{
             "book_id": "book-001",
             "name": "Преступление и наказание",
